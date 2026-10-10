@@ -18,11 +18,14 @@ example {x y : ℝ} (h : x = 1 ∨ y = -1) : x * y + x = y + 1 := by
 example {n : ℕ} : n ^ 2 ≠ 2 := by
   have hn := le_or_succ_le n 1
   obtain hn | hn := hn
-  apply ne_of_lt
-  calc
-    n ^ 2 ≤ 1 ^ 2 := by rel [hn]
-    _ < 2 := by numbers
-  sorry
+  · apply ne_of_lt
+    calc
+      n ^ 2 ≤ 1 ^ 2 := by rel [hn]
+      _ < 2 := by numbers
+  · apply ne_of_gt
+    calc
+      n ^ 2 ≥ (2) ^ 2 := by rel [hn]
+      _ > 2 := by numbers
 
 example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
   right
@@ -38,7 +41,11 @@ example {x : ℝ} (hx : x ^ 2 - 3 * x + 2 = 0) : x = 1 ∨ x = 2 := by
     (x - 1) * (x - 2) = x ^ 2 - 3 * x + 2 := by ring
     _ = 0 := by rw [hx]
   have h2 := eq_zero_or_eq_zero_of_mul_eq_zero h1
-  sorry
+  obtain h2 | h2 := h2
+  · left
+    addarith [h2]
+  · right
+    addarith [h2]
 
 example {n : ℤ} : n ^ 2 ≠ 2 := by
   have hn0 := le_or_succ_le n 0

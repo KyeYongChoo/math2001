@@ -12,7 +12,8 @@ example : (11 : ℕ) ∣ 88 := by
 
 
 example : (-2 : ℤ) ∣ 6 := by
-  sorry
+  use -3
+  numbers
 
 example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
   obtain ⟨k, hk⟩ := hab
@@ -23,7 +24,13 @@ example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
 
 
 example {a b c : ℕ} (hab : a ∣ b) (hbc : b ^ 2 ∣ c) : a ^ 2 ∣ c := by
-  sorry
+  obtain ⟨mul_hab, hab⟩ := hab
+  obtain ⟨mul_hbc, hbc⟩ := hbc
+  use mul_hab ^ 2 * mul_hbc
+  rw [← mul_assoc]
+  calc
+    c = b ^ 2 * mul_hbc := hbc
+    _ = a ^ 2 * mul_hab ^ 2 * mul_hbc := by rw[hab]; ring
 
 example {x y z : ℕ} (h : x * y ∣ z) : x ∣ z := by
   sorry

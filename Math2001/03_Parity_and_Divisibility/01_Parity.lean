@@ -13,7 +13,9 @@ example : Int.Odd (7 : ℤ) := by
 
 
 example : Int.Odd (-3 : ℤ) := by
-  sorry
+  dsimp [Int.Odd]
+  use -2
+  numbers
 
 example {n : ℤ} (hn : Int.Odd n) : Int.Odd (3 * n + 2) := by
   dsimp [Int.Odd] at *
@@ -25,7 +27,11 @@ example {n : ℤ} (hn : Int.Odd n) : Int.Odd (3 * n + 2) := by
 
 
 example {n : ℤ} (hn : Int.Odd n) : Int.Odd (7 * n - 4) := by
-  sorry
+  dsimp [Int.Odd] at *
+  obtain ⟨k, hk⟩ := hn
+  use 7 * k + 1
+  rw [hk]
+  ring
 
 example {x y : ℤ} (hx : Int.Odd x) (hy : Int.Odd y) : Int.Odd (x + y + 1) := by
   obtain ⟨a, ha⟩ := hx
@@ -37,7 +43,13 @@ example {x y : ℤ} (hx : Int.Odd x) (hy : Int.Odd y) : Int.Odd (x + y + 1) := b
 
 
 example {x y : ℤ} (hx : Int.Odd x) (hy : Int.Odd y) : Int.Odd (x * y + 2 * y) := by
-  sorry
+  obtain ⟨a, ha⟩ := hx
+  obtain ⟨b, hb⟩ := hy
+  dsimp[Int.Odd]
+  use 2 * a * b + a + 3 * b + 1
+  calc
+    x * y + 2 * y = (2 * a + 1) * (2 * b + 1) + 2 * (2 * b + 1) := by rw [ha, hb]
+    _ = 2 * (2 * a * b + a + 3 * b + 1) + 1 := by ring
 
 example {m : ℤ} (hm : Int.Odd m) : Int.Even (3 * m - 5) := by
   sorry

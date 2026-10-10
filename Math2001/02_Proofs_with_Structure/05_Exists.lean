@@ -21,7 +21,13 @@ example {t : ℝ} (h : ∃ a : ℝ, a * t < 0) : t ≠ 0 := by
     cancel -x at hxt'
     apply ne_of_gt
     apply hxt'
-  · sorry
+  · have hxt' : x * t < x * 0 :=
+    calc
+      x * t < 0 := hxt
+      _ = x * 0 := by ring
+    cancel x at hxt'
+    apply ne_of_lt
+    assumption
 
 example : ∃ n : ℤ, 12 * n = 84 := by
   use 7
@@ -34,7 +40,8 @@ example (x : ℝ) : ∃ y : ℝ, y > x := by
 
 
 example : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 11 := by
-  sorry
+  use 6, 5
+  numbers
 
 example (a : ℤ) : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 2 * a + 1 := by
   sorry

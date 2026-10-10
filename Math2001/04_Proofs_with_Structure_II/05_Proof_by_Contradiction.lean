@@ -23,7 +23,12 @@ example : ¬ 3 ∣ 13 := by
     calc 13 = 3 * k := hk
       _ ≤ 3 * 4 := by rel [h4]
     numbers at h
-  · sorry
+  · have h :=
+      calc
+        15 = 3 * 5 := by numbers
+        _ ≤ 3 * k := by rel [h5]
+        _ = 13 := by rw [hk]
+    numbers at h
 
 example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
   intro h
@@ -35,7 +40,22 @@ example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
 
 
 example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
-  sorry
+  intro h
+  obtain ⟨n, hn⟩ := h
+  symm at hn
+  obtain (n_le_1 : n ≤ 1) | (n_ge_2: n ≥ 2)  := le_or_succ_le n 1
+  · have h1:=
+      calc
+        2 = n^2 := hn
+        _ ≤ 1^2 := by rel[n_le_1]
+        _ = 1 := by numbers
+    numbers at h1
+  · have h1:=
+      calc
+        2 = n^2 := hn
+        _ ≥ 2^2 := by rel[n_ge_2]
+        _ = 4 := by numbers
+    numbers at h1
 
 example (n : ℤ) : Int.Even n ↔ ¬ Int.Odd n := by
   constructor
@@ -53,7 +73,18 @@ example (n : ℤ) : Int.Even n ↔ ¬ Int.Odd n := by
 
 
 example (n : ℤ) : Int.Odd n ↔ ¬ Int.Even n := by
-  sorry
+  constructor
+  <;> intro pre
+  · intro post
+    rw [Int.even_iff_modEq] at post
+    rw [Int.odd_iff_modEq] at pre
+    have h :=
+    calc 0 ≡ n [ZMOD 2] := by rel [post]
+      _ ≡ 1 [ZMOD 2] := by rel [pre]
+    numbers at h -- contradiction!
+  · obtain (h1 : Int.Even n) | (h2 : Int.Odd n) := Int.even_or_odd_lib n
+    · contradiction
+    · exact h2
 
 example (n : ℤ) : ¬(n ^ 2 ≡ 2 [ZMOD 3]) := by
   intro h
@@ -63,8 +94,18 @@ example (n : ℤ) : ¬(n ^ 2 ≡ 2 [ZMOD 3]) := by
       _ ≡ n ^ 2 [ZMOD 3] := by rel [hn]
       _ ≡ 2 [ZMOD 3] := by rel [h]
     numbers at h -- contradiction!
-  · sorry
-  · sorry
+  · have h :=
+    calc (1:ℤ) = 1 ^ 2 := by numbers
+      _ ≡ n ^ 2 [ZMOD 3] := by rel [hn]
+      _ ≡ 2 [ZMOD 3] := by rel [h]
+    numbers at h -- contradiction!
+  · symm at h
+    have h2 :=
+    calc 2 ≡ n ^ 2 [ZMOD 3] := h
+      _ ≡ 2 ^ 2 [ZMOD 3] := by rel [hn]
+      _ ≡ 1 + 3 * 1 [ZMOD 3] := by numbers
+      _ ≡ 1 [ZMOD 3] := by extra
+    numbers at h2
 
 example {p : ℕ} (k l : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hkl : p = k * l) :
     ¬(Prime p) := by

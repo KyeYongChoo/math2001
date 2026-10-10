@@ -10,7 +10,8 @@ example : 11 ≡ 3 [ZMOD 4] := by
   numbers
 
 example : -5 ≡ 1 [ZMOD 3] := by
-  sorry
+  use -2
+  numbers
 
 theorem Int.ModEq.add {n a b c d : ℤ} (h1 : a ≡ b [ZMOD n]) (h2 : c ≡ d [ZMOD n]) :
     a + c ≡ b + d [ZMOD n] := by

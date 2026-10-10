@@ -83,7 +83,12 @@ example : ∃ x : ℝ, Tribalanced x ∧ ¬ Tribalanced (x + 1) := by
   sorry
 
 example (P Q : Prop) : (¬P → ¬Q) ↔ (Q → P) := by
-  sorry
+  constructor
+  <;> intro h not_h_postcondition
+  <;> by_contra h_precondition
+  <;> have h_postcondition := (h h_precondition)
+  · exact absurd not_h_postcondition h_postcondition
+  · exact absurd h_postcondition not_h_postcondition
 
 example : ∃ k : ℕ, Superpowered k ∧ ¬ Superpowered (k + 1) := by
   sorry

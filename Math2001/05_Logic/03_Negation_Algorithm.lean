@@ -20,7 +20,14 @@ example (P Q : Prop) : ¬ (P ∧ Q) ↔ (¬ P ∨ ¬ Q) := by
       contradiction
     · left
       apply hP
-  · sorry
+  · intro h
+    obtain h1 | h2 := h
+    · push Not
+      left
+      exact h1
+    · push Not
+      right
+      exact h2
 
 example :
     ¬(∀ m : ℤ, m ≠ 2 → ∃ n : ℤ, n ^ 2 = m) ↔ ∃ m : ℤ, m ≠ 2 ∧ ∀ n : ℤ, n ^ 2 ≠ m :=
@@ -32,7 +39,9 @@ example :
 
 example : ¬(∀ n : ℤ, ∃ m : ℤ, n ^ 2 < m ∧ m < (n + 1) ^ 2)
     ↔ ∃ n : ℤ, ∀ m : ℤ, n ^ 2 ≥ m ∨ m ≥ (n + 1) ^ 2 :=
-  sorry
+  by
+    push Not
+    rfl
 
 #push_neg ¬(∀ m : ℤ, m ≠ 2 → ∃ n : ℤ, n ^ 2 = m)
   -- ∃ m : ℤ, m ≠ 2 ∧ ∀ (n : ℤ), n ^ 2 ≠ m
@@ -55,7 +64,10 @@ example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
     calc
       n ^ 2 ≤ 1 ^ 2 := by rel [hn]
       _ < 2 := by numbers
-  · sorry
+  · apply ne_of_gt
+    calc
+      2 < 2 ^ 2 := by numbers
+      _ ≤ n ^ 2 := by rel [hn]
 
 /-! # Exercises -/
 

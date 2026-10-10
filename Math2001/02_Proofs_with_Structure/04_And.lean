@@ -14,13 +14,14 @@ example {x y : ℤ} (h : 2 * x - y = 4 ∧ y - x + 1 = 2) : x = 5 := by
 
 
 example {p : ℚ} (hp : p ^ 2 ≤ 8) : p ≥ -5 := by
-  have hp' : -3 ≤ p ∧ p ≤ 3
-  · apply abs_le_of_sq_le_sq'
+  have hp' : -3 ≤ p ∧ p ≤ 3 := by
+    apply abs_le_of_sq_le_sq'
     calc
       p ^ 2 ≤ 9 := by addarith [hp]
       _ = 3 ^ 2 := by numbers
     numbers
-  sorry
+  obtain ⟨hp1, hp2⟩ := hp'
+  addarith[hp1]
 
 example {a b : ℝ} (h1 : a - 5 * b = 4) (h2 : b + 2 = 3) : a = 9 ∧ b = 1 := by
   constructor
@@ -49,7 +50,12 @@ example {a b : ℝ} (h1 : a ^ 2 + b ^ 2 = 0) : a = 0 ∧ b = 0 := by
       a ^ 2 ≤ a ^ 2 + b ^ 2 := by extra
       _ = 0 := by rw [h1]
     extra
-  sorry
+  have h3 : b ^ 2 = 0 := by addarith [h1, h2]
+  constructor
+  · apply sq_eq_zero_iff.mp
+    exact h2
+  · apply sq_eq_zero_iff.mp
+    exact h3
 
 /-! # Exercises -/
 

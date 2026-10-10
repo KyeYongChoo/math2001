@@ -65,7 +65,11 @@ example {p : ℕ} (hp : 2 ≤ p) (H : ∀ m : ℕ, 1 < m → m < p → ¬m ∣ p
     left
     addarith [hm]
   -- the case `1 < m`
-  sorry
+  · obtain (hm : m = p) | (hm : m < p) := eq_or_lt_of_le (Nat.le_of_dvd hp' hmp)
+    · right
+      apply hm
+    · have : ¬m ∣ p := H m hm_left hm
+      contradiction
 
 example : Prime 5 := by
   apply prime_test
@@ -83,7 +87,67 @@ example : Prime 5 := by
 
 example {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
     (h_pyth : a ^ 2 + b ^ 2 = c ^ 2) : 3 ≤ a := by
-  sorry
+  obtain (ha2 : a ≤ 2) | (ha3 : a ≥ 3) := le_or_succ_le a 2
+
+  · have hbc : b + 1 ≤ c := by
+      have : b ^ 2 < c ^ 2 :=
+        calc
+          b ^ 2 < a ^ 2 + b ^ 2 := by extra
+          _ = c ^ 2 := h_pyth
+      cancel 2 at this
+    have key : 2 * b + 1 ≤ a ^ 2 := by
+      have :=
+        calc
+          b ^ 2 + (2 * b + 1) = (b + 1) ^ 2 := by ring
+          _ ≤ c ^ 2 := by rel [hbc]
+          _ = a ^ 2 + b ^ 2 := by rw [h_pyth]
+          _ = b ^ 2 + a ^ 2 := by ring
+      addarith [this]
+    have hb1 : b = 1 := by
+      have hup : b ≤ 1 := by
+        obtain (h : b ≤ 1) | (h : b ≥ 2) := le_or_succ_le b 1
+        · apply h
+        · have :=
+            calc
+              5 = 2 * 2 + 1 := by numbers
+              _ ≤ 2 * b + 1 := by rel [h]
+              _ ≤ a ^ 2 := key
+              _ ≤ 2 ^ 2 := by rel [ha2]
+          numbers at this
+      apply le_antisymm hup hb
+    have hc2 : c = 2 := by
+      have hup : c ≤ 2 := by
+        obtain (h : c ≤ 2) | (h : c ≥ 3) := le_or_succ_le c 2
+        · apply h
+        · have :=
+            calc
+              9 = 3 ^ 2 := by numbers
+              _ ≤ c ^ 2 := by rel [h]
+              _ = a ^ 2 + b ^ 2 := by rw [h_pyth]
+              _ ≤ 2 ^ 2 + 1 ^ 2 := by rel [ha2, hb1.le]
+          numbers at this
+      apply le_antisymm hup (by addarith [hbc, hb1])
+    have hp : a ^ 2 + 1 ^ 2 = 2 ^ 2 := by
+      rw [hb1, hc2] at h_pyth
+      apply h_pyth
+    interval_cases a
+    · numbers at hp
+    · numbers at hp
+
+  · apply ha3
+
+  -- by_contra
+  -- apply not_le.mp at this
+  -- have diff_of_squares : (c + b) * (c - b) = a^2 := by sorry
+  -- interval_cases a
+  -- · obtain ⟨h_bc_sum, h_bc_diff⟩  := mul_eq_one.mp diff_of_squares
+  --   have : c = 1 := by sorry
+  --   have : b = 0 := by sorry
+  --   apply ne_of_gt at hb
+  --   contradiction
+  -- · -- if can reform in factorization, c + b = 4 and c - b = 1 and the solution requires fractions
+  --   -- or c+b = 2 and c - b = 2 and that solution has b = 0
+  --   sorry
 
 /-! # Exercises -/
 
