@@ -55,4 +55,12 @@ theorem exists_prime_factor {n : ℕ} (hn2 : 2 ≤ n) : ∃ p : ℕ, Prime p ∧
 
 
 theorem extract_pow_two (n : ℕ) (hn : 0 < n) : ∃ a x, Odd x ∧ n = 2 ^ a * x := by
-  sorry
+  obtain (h_even| h_odd) := Nat.even_or_odd_lib n
+  · obtain ⟨k, h_even⟩ := h_even
+    rw [h_even]
+    have := extract_pow_two k (by grind)
+    obtain ⟨a, x, ih⟩ := this
+    use (a + 1), x
+    refine ⟨ih.1, (by grind)⟩
+  · use 0, n
+    refine ⟨by exact h_odd, by ring⟩

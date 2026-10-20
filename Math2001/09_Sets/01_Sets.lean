@@ -164,12 +164,12 @@ example : {a : ℕ | 20 ∣ a} ⊆ {x : ℕ | 5 ∣ x} := by
 example : {a : ℕ | 20 ∣ a} ⊈ {x : ℕ | 5 ∣ x} := by
   sorry
 
-
-example : {a : ℕ | 5 ∣ a} ⊆ {x : ℕ | 20 ∣ x} := by
-  sorry
-
 example : {a : ℕ | 5 ∣ a} ⊈ {x : ℕ | 20 ∣ x} := by
-  sorry
+  dsimp [Set.subset_def]
+  push Not
+  use 5
+  constructor
+  <;> grind
 
 example : {r : ℤ | 3 ∣ r} ⊆ {s : ℤ | 0 ≤ s} := by
   sorry

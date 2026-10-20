@@ -45,7 +45,12 @@ example : Bijective (fun ((m, n) : ℤ × ℤ) ↦ (m + n, m + 2 * n)) := by
 
 
 example : Bijective (fun ((m, n) : ℝ × ℝ) ↦ (m + n, m - n)) := by
-  sorry
+  rw [bijective_iff_exists_inverse]
+  use fun (x, y) ↦ ((x + y)/ 2, (x - y)/2)
+  constructor
+  <;> ext
+  <;> dsimp
+  <;> ring
 
 example : ¬ Bijective (fun ((m, n) : ℤ × ℤ) ↦ (m + n, m - n)) := by
   dsimp [Bijective, Injective, Surjective]
@@ -237,4 +242,5 @@ def h : ℝ × ℝ × ℝ → ℝ × ℝ × ℝ
   | (x, y, z) => (y, z, x)
 
 example : h ∘ h ∘ h = id := by
-  sorry
+  ext
+  dsimp [h]

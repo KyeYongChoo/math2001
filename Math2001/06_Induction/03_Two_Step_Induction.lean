@@ -141,7 +141,11 @@ def b : ℕ → ℤ
   | n + 2 => 5 * b (n + 1) - 6 * b n
 
 example (n : ℕ) : b n = 3 ^ n - 2 ^ n := by
-  sorry
+  two_step_induction n with k ih1 ih2
+  · rw[b]
+  · rw[b]
+  · rw[b, ih2, ih1]
+    ring
 
 def c : ℕ → ℤ
   | 0 => 3

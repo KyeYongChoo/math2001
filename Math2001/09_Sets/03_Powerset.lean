@@ -14,6 +14,7 @@ open Set Function
 
 #check {{3, 4}, {4, 5, 6}} -- `{{3, 4}, {4, 5, 6}} : Set (Set ℕ)`
 #check {s : Set ℕ | 3 ∈ s} -- `{s | 3 ∈ s} : Set (Set ℕ)`
+#check {s : Set (Set ℕ) | s ≠ ∅}
 
 
 
@@ -79,7 +80,23 @@ example : ¬ ∃ f : X → Set X, Surjective f := by
 def r (s : Set ℕ) : Set ℕ := s ∪ {3}
 
 example : ¬ Injective r := by
-  sorry
+  dsimp [Injective]
+  push Not
+  use {1}, {1,3}
+  dsimp [r]
+  constructor
+  · ext
+    dsimp
+    grind
+  · ext
+    dsimp
+    push Not
+    use 3
+    grind
+
+
+
+
 
 namespace Int
 

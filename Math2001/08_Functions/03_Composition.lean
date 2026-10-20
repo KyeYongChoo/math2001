@@ -143,10 +143,14 @@ example : b ∘ a = c := by
 
 def u (x : ℝ) : ℝ := 5 * x + 1
 
-noncomputable def v (x : ℝ) : ℝ := sorry
+noncomputable def v (x : ℝ) : ℝ := (x - 1)/5
 
 example : Inverse u v := by
-  sorry
+  dsimp [Inverse]
+  constructor
+  <;> ext
+  <;> dsimp[u, v]
+  <;> ring
 
 example {f : X → Y} (hf : Injective f) {g : Y → Z} (hg : Injective g) :
     Injective (g ∘ f) := by

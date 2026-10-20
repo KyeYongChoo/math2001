@@ -169,17 +169,16 @@ example : Injective (fun (x:ℝ) ↦ x ^ 3) := by
 
 
 example : Injective (fun (x : ℚ) ↦ x - 12) := by
-  sorry
-
-example : ¬ Injective (fun (x : ℚ) ↦ x - 12) := by
-  sorry
-
-
-example : Injective (fun (x : ℝ) ↦ 3) := by
-  sorry
+  dsimp [Injective]
+  intro a b hab
+  addarith[hab]
 
 example : ¬ Injective (fun (x : ℝ) ↦ 3) := by
-  sorry
+  dsimp [Injective]
+  push Not
+  use 0, 1
+  constructor
+  <;> addarith []
 
 example : Injective (fun (x : ℚ) ↦ 3 * x - 1) := by
   sorry
@@ -208,10 +207,10 @@ example : Surjective (fun (x : ℤ) ↦ 2 * x) := by
 example : ¬ Surjective (fun (x : ℤ) ↦ 2 * x) := by
   sorry
 
-example : Surjective (fun (n : ℕ) ↦ n ^ 2) := by
-  sorry
-
 example : ¬ Surjective (fun (n : ℕ) ↦ n ^ 2) := by
+  dsimp [Surjective]
+  push Not
+  use 2
   sorry
 
 inductive White

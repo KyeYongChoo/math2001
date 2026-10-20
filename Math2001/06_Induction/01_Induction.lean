@@ -22,14 +22,30 @@ example (n : ℕ) : 2 ^ n ≥ n + 1 := by
 example (n : ℕ) : Even n ∨ Odd n := by
   simple_induction n with k IH
   · -- base case
-    sorry
+    left
+    use 0
+    numbers
   · -- inductive step
     obtain ⟨x, hx⟩ | ⟨x, hx⟩ := IH
-    · sorry
-    · sorry
+    · right
+      use x
+      rw [hx]
+    · left
+      use x + 1
+      rw [hx]
+      ring
 
 example {a b d : ℤ} (h : a ≡ b [ZMOD d]) (n : ℕ) : a ^ n ≡ b ^ n [ZMOD d] := by
-  sorry
+  induction n with
+  | zero =>
+    dsimp[Int.ModEq]
+    ring
+    exact dvd_zero _
+  | succ n ih =>
+    calc
+      a ^ (n + 1) = a * a ^ n := by ring
+      _ ≡ b * b ^ n [ZMOD d] := by rel[ih, h]
+      _ = b ^ (n + 1) := by ring
 
 example (n : ℕ) : 4 ^ n ≡ 1 [ZMOD 15] ∨ 4 ^ n ≡ 4 [ZMOD 15] := by
   simple_induction n with k IH
@@ -64,9 +80,34 @@ example : forall_sufficiently_large n : ℕ, 2 ^ n ≥ n ^ 2 := by
   intro n hn
   induction_from_starting_point n, hn with k hk IH
   · -- base case
-    sorry
+    numbers
   · -- inductive step
-    sorry
+    have ha: (k - 1) > 2 := by
+      calc
+        k - 1 ≥ 4 - 1 := by rel [hk]
+        _ > 2 := by numbers
+
+    have hb: (k * k) = (k - 1) * k + k := by
+      symm
+      calc
+        (k - 1) * k + k = (k - 1 + 1) * k := by ring
+        _ = (k + (1 - 1)) * k := by grind
+        _ = (k * k) := by ring
+
+    have hc: k ≥ 1 := by
+      calc
+        k ≥ 4 := hk
+        _ ≥ 1 := by numbers
+
+    calc
+      2 ^ (k + 1) = 2 * 2 ^ k := by ring
+      _ ≥ 2 * k ^ 2 := by rel[IH]
+      _ = k ^ 2 + (k * k) := by ring
+      _ = k ^ 2 + ((k - 1) * k + k) := by rw [hb]
+      _ = k ^ 2 + (k - 1) * k + k := by ring
+      _ ≥ k ^ 2 + 2 * k + k := by rel[ha]
+      _ ≥ k ^ 2 + 2 * k + 1 := by rel[hc]
+      _ = (k + 1) ^ 2 := by ring
 
 
 /-! # Exercises -/

@@ -183,13 +183,19 @@ section
 local infix:50 "∼" => fun ((a, b) : ℕ × ℕ) (c, d) ↦ a + d = b + c
 
 example : Reflexive (· ∼ ·) := by
-  sorry
+  dsimp [Reflexive]
+  intro a
+  grind
 
 example : Symmetric (· ∼ ·) := by
-  sorry
+  dsimp [Symmetric]
+  intro a
+  grind
 
 example : Transitive (· ∼ ·) := by
-  sorry
+  dsimp [Transitive]
+  intro a
+  grind
 
 end
 

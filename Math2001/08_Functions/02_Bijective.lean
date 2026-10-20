@@ -127,8 +127,19 @@ example : ∀ f : Celestial → Celestial, Injective f → Bijective f := by
       apply h_sun
     · use moon
       apply h_moon
-  | moon, sun => sorry
-  | moon, moon => sorry
+  | moon, sun =>
+    intro y
+    cases y
+    · use moon
+      apply h_moon
+    · use sun
+      apply h_sun
+
+  | moon, moon =>
+    have : sun = moon
+    · apply hf
+      rw [h_sun, h_moon]
+    contradiction
 
 
 example : ¬ ∀ f : ℕ → ℕ, Injective f → Bijective f := by
@@ -154,10 +165,15 @@ example : ¬ ∀ f : ℕ → ℕ, Injective f → Bijective f := by
 
 
 example : Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
-  sorry
+  constructor
+  · dsimp [Injective]
+    intro x y hxy
+    grind
 
-example : ¬ Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
-  sorry
+  · dsimp [Surjective]
+    intro x
+    use (4 - x)/3
+    ring
 
 
 example : Bijective (fun (x : ℝ) ↦ x ^ 2 + 2 * x) := by

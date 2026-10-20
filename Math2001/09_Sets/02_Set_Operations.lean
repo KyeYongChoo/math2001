@@ -136,7 +136,7 @@ example : {0, 1, 2, 3, 4} ∩ {0, 2, 4, 6, 8} = sorry := by
 
 example : {1, 2} ∩ {3} = sorry := by check_equality_of_explicit_sets
 
-example : {3, 4, 5}ᶜ ∩ {1, 3, 5, 7, 9} = sorry := by
+example : {3, 4, 5}ᶜ ∩ {1, 3, 5, 7, 9} = {1,7,9} := by
   check_equality_of_explicit_sets
 
 example : {r : ℤ | r ≡ 7 [ZMOD 10] }

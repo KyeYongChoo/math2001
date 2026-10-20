@@ -82,11 +82,20 @@ example (a b : ℕ) : (pascal a b : ℚ) = (a + b)! / (a ! * b !) := by
 
 theorem pascal_symm (m n : ℕ) : pascal m n = pascal n m := by
   match m, n with
-  | 0, 0 => sorry
-  | a + 1, 0 => sorry
-  | 0, b + 1 => sorry
-  | a + 1, b + 1 => sorry
-
+  | 0, 0 => rw[pascal]
+  | a + 1, 0 => rw [pascal, pascal]
+  | 0, b + 1 => rw[pascal, pascal]
+  | a + 1, b + 1 =>
+    rw[pascal]
+    nth_rewrite 1 [pascal]
+    rw [pascal_symm b (a+1), pascal_symm (b + 1) a]
+    ring
+termination_by (m + n)
 
 example (a : ℕ) : pascal a 1 = a + 1 := by
-  sorry
+  induction a with
+  | zero =>
+    rw[pascal]
+  | succ b ih =>
+    rw [pascal, pascal, zero_add, ih]
+    ring

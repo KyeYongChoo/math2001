@@ -149,9 +149,51 @@ example (a b : ℤ) (h : 0 < b) : ∃ r : ℤ, 0 ≤ r ∧ r < b ∧ a ≡ r [ZM
 
 /-! # Exercises -/
 
+#check mul_lt_mul_of_neg_right
 
 theorem lt_fmod_of_neg (n : ℤ) {d : ℤ} (hd : d < 0) : d < fmod n d := by
-  sorry
+  rw [fmod]
+  split_ifs with h1 h2 h3 <;> try push Not at * -- woah turns out push not at * gives error even if the hypothesis is rewritten
+  · exact lt_fmod_of_neg (n+d) hd
+  · exact lt_fmod_of_neg (n-d) hd
+  · exact hd
+  · rw[mul_sub] at h2
+    have hd_alt : - d > 0 := by omega
+    have h2_alt: d * n ≤ d * d := by omega
+    have h2_alt:= neg_le_neg h2_alt
+    have h2_alt: - d * d ≤ - d * n:= by grind
+    cancel (-d) at h2_alt
+    grind
+termination_by (2 * n - d)
+decreasing_by
+  ·
+    /-
+    d : ℤ
+    hd : d < 0
+    n : ℤ
+    a✝ : ∀ (y : ℤ), (invImage (fun x ↦ 2 * x - d) sizeOfWFRel).1 y n → d < fmod y d
+    h1 : n * d < 0
+    ⊢ sizeOf (2 * (n + d) - d) < sizeOf (2 * n - d)
+    -/
+    rw [Int.sizeOf_lt_sizeOf_iff, abs_lt_abs_iff]
+    rcases mul_neg_iff.mp ‹n * d < 0› with ⟨hn, hd'⟩ | ⟨hn, hd'⟩
+    · left; constructor <;> omega
+    · right; constructor <;> omega
+  ·
+    /-
+    d : ℤ
+    hd : d < 0
+    n : ℤ
+    a✝ : ∀ (y : ℤ), (invImage (fun x ↦ 2 * x - d) sizeOfWFRel).1 y n → d < fmod y d
+    h1 : ¬n * d < 0
+    h2 : 0 < d * (n - d)
+    ⊢ sizeOf (2 * (n - d) - d) < sizeOf (2 * n - d)
+    -/
+    rw [Int.sizeOf_lt_sizeOf_iff, abs_lt_abs_iff]
+    rcases mul_pos_iff.mp ‹(0 : ℤ) < d * (n - d)› with ⟨hd', hn⟩ | ⟨hd', hn⟩
+    · left; constructor <;> omega
+    · right; constructor <;> omega
+
 
 def T (n : ℤ) : ℤ :=
   if 0 < n then
@@ -165,7 +207,16 @@ decreasing_by
   all_goals (simp_wf; rw [Int.sizeOf_lt_sizeOf_iff, abs_lt_abs_iff]; omega)
 
 theorem T_eq (n : ℤ) : T n = n ^ 2 := by
-  sorry
+  rw[T]
+  split_ifs with h1 h2
+  · rw [T_eq (1 - n)]
+    ring
+  · rw [T_eq (-n)]
+    ring
+  · grind
+termination_by 3 * n - 1
+decreasing_by
+  all_goals (simp_wf; rw [Int.sizeOf_lt_sizeOf_iff, abs_lt_abs_iff]; omega)
 
 theorem uniqueness (a b : ℤ) (h : 0 < b) {r s : ℤ}
     (hr : 0 ≤ r ∧ r < b ∧ a ≡ r [ZMOD b])

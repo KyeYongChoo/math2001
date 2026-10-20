@@ -44,9 +44,14 @@ def x : ℕ → ℤ
 example (n : ℕ) : x n ≡ 1 [ZMOD 4] := by
   simple_induction n with k IH
   · -- base case
-    sorry
+    use 1
+    rw[x]
+    numbers
   · -- inductive step
-    sorry
+    rw[x]
+    calc
+      2 * x k - 1 ≡ 2 * 1 - 1 [ZMOD 4] := by rel[IH]
+      _ = 1 := by numbers
 
 example (n : ℕ) : x n = 2 ^ (n + 2) + 1 := by
   simple_induction n with k IH
@@ -93,13 +98,29 @@ example (n : ℕ) : ∀ d, 1 ≤ d → d ≤ n → d ∣ n ! := by
     intro d hk1 hk
     obtain hk | hk : d = k + 1 ∨ d < k + 1 := eq_or_lt_of_le hk
     · -- case 1: `d = k + 1`
-      sorry
+      rw [factorial, ← hk]
+      use (k !)
+      rfl
     · -- case 2: `d < k + 1`
-      sorry
+      have h1 : d ≤ k := by grind
+      have h2 := IH d hk1 h1
+      rw[factorial]
+      obtain ⟨k2, h2⟩ := h2
+      use (k+1) * k2
+      grind
 
 example (n : ℕ) : (n + 1)! ≥ 2 ^ n := by
-  sorry
+  induction n with
+  | zero =>
+    rw[factorial, factorial]
+    numbers
 
+  | succ n ih =>
+    rw[factorial]
+    calc
+      (n + 1 + 1) * (n + 1)! ≥ (n + 1 + 1) * 2 ^ n := by rel[ih]
+      _ ≥ 2 * 2 ^ n := by grind
+      _ = 2 ^ (n + 1) := by ring
 
 /-! # Exercises -/
 

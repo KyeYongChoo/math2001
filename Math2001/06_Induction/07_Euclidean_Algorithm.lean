@@ -69,29 +69,51 @@ theorem gcd_dvd (a b : ℤ) : gcd a b ∣ b ∧ gcd a b ∣ a := by
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry
+      exact IH_left
     · -- prove that `gcd a b ∣ a`
-      sorry
+      obtain ⟨k, hk : b = gcd b (fmod a b) * k⟩ := IH_left
+      obtain ⟨l, hl : fmod a b = gcd b (fmod a b) * l⟩ := IH_right
+      have H : fmod a b + b * fdiv a b = a := fmod_add_mul_fdiv a b
+      set q := fdiv a b
+      set r := fmod a b
+      use l + k * q
+      calc a = r + b * q := by rw [H]
+        _ = gcd b r * l + (gcd b r * k) * q := by rw [← hk, ← hl]
+        _ = gcd b r * (l + k * q) := by ring
   · -- case `b < 0`
     have IH : _ ∧ _ := gcd_dvd b (fmod a (-b)) -- inductive hypothesis
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry
+      exact IH_left
     · -- prove that `gcd a b ∣ a`
-      sorry
+      obtain ⟨l, hl : b = gcd b (fmod a (-b)) * l⟩ := IH_left
+      obtain ⟨k, hk : a.fmod (-b) = gcd b (fmod a (-b)) * k⟩ := IH_right
+      have H : fmod a (-b) + (-b) * fdiv a (-b) = a := fmod_add_mul_fdiv a (-b)
+      set q := fdiv a (-b)
+      set r := fmod a (-b)
+      set p := gcd b r
+      use k -l * q
+      grind
   · -- case `b = 0`, `0 ≤ a`
     constructor
+    have : b = 0 := by grind
     · -- prove that `gcd a b ∣ b`
-      sorry
+      use 0
+      grind
     · -- prove that `gcd a b ∣ a`
-      sorry
+      use 1
+      ring
   · -- case `b = 0`, `a < 0`
     constructor
+    have : b = 0 := by grind
     · -- prove that `gcd a b ∣ b`
-      sorry
+      use 0
+      grind
+
     · -- prove that `gcd a b ∣ a`
-      sorry
+      use -1
+      ring
 termination_by b
 
 
@@ -223,4 +245,10 @@ theorem bezout (a b : ℤ) : ∃ x y : ℤ, x * a + y * b = gcd a b := by
 
 
 theorem gcd_maximal {d a b : ℤ} (ha : d ∣ a) (hb : d ∣ b) : d ∣ gcd a b := by
-  sorry
+  obtain ⟨x, hx : a = d * x⟩ := ha
+  obtain ⟨y, hy : b = d * y⟩ := hb
+  obtain ⟨u, v, huv : u * a + v * b = gcd a b⟩ := bezout a b
+  use u * x + v * y
+  calc gcd a b = u * a + v * b := by rw [huv]
+    _ = u * (d * x) + v * (d * y) := by rw [hx, hy]
+    _ = d * (u * x + v * y) := by ring

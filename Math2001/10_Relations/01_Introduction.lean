@@ -176,7 +176,10 @@ end
 
 
 example : ¬ Symmetric ((· < ·) : ℝ → ℝ → Prop) := by
-  sorry
+  dsimp [Symmetric]
+  push Not
+  use 1, 2
+  grind
 
 section
 local infix:50 "∼" => fun (x y : ℤ) ↦ x ≡ y [ZMOD 2]
